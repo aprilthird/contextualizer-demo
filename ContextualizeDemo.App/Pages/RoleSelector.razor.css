@@ -1,0 +1,26 @@
+﻿.card-selector {
+    border-radius: 1rem;
+    background-color: lightgray;
+    color: black;
+    cursor: pointer;
+    padding: 1rem;
+    max-width: 800px;
+    margin-bottom: 1rem;
+    border: solid;
+    border-width: .25rem;
+    border-color: var(--bs-primary);
+}
+
+.card-selector:hover {
+    background-color: dimgray;
+    border-color: var(--bs-info);
+    color: white;
+    box-sizing: border-box;
+}
+
+.card-selector.selected {
+    background-color: dimgray;
+    border-color: var(--bs-info);
+    color: white;
+    box-sizing: border-box;
+}

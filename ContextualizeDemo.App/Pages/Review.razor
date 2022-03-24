@@ -1,0 +1,20 @@
+﻿@page "/review"
+
+<PageTitle>Review - @Constants.AppName</PageTitle>
+
+<p>
+    Please review the document below. This document is 5th grade in math.<br />
+    Click where you see any errors to make suggestions on fixing the content.<br />
+    When you are done click [Done].
+</p>
+
+<iframe src="https://docs.google.com/gview?url=http://infolab.stanford.edu/pub/papers/google.pdf&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe>
+
+<div class="d-flex justify-content-between align-items-center">
+    <a href="/assignments" class="small">Back</a>
+    <a class="btn btn-primary" href="/assignments">Done</a>
+</div>
+
+@code {
+
+}

@@ -1,0 +1,32 @@
+﻿@page "/stats"
+
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Stats - @Constants.AppName</PageTitle>
+
+<h3>Stats</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <div id="piechart" style="height: 500px;"></div>
+    </div>
+    <div class="col-md-6">
+        <div id="curve_chart" style="height: 500px"></div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("Contextualize.initCharts");
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //if(firstRender)
+        //{
+        //    await JSRuntime.InvokeVoidAsync("Contextualize.initCharts");
+        //}
+    }
+}

@@ -1,0 +1,96 @@
+﻿@page "/dashboard"
+
+@inject NavigationManager NavManager
+@inject ISessionStorageService SessionStorage
+
+<PageTitle>Dashboard - @Constants.AppName</PageTitle>
+
+<div class="text-center">
+    <img src="/media/logo-contextualize.png" />
+    <p>
+        Hey! <strong>@(User != null ? $"{User.LastName}, {User.FirstName}" : string.Empty)</strong> Welcome to <strong>@Constants.AppName</strong>.
+    </p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-success">
+            <div class="card-body">
+                <div class="card-text">You have translated</div>
+                <div class="card-title"><i class="fa-solid fa-globe"></i>&emsp;@TotalTranslated items</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-warning">
+            <div class="card-body">
+                <div class="card-text">You have reviewed</div>
+                <div class="card-title"><i class="fa-solid fa-search"></i>&emsp;@TotalReviewed items</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-danger">
+            <div class="card-body">
+                <div class="card-text">You have contextualized</div>
+                <div class="card-title"><i class="fa-solid fa-location-dot"></i>&emsp;@TotalContextualized items</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card bg-primary">
+            <div class="card-body">
+                <div class="card-text">You have invited</div>
+                <div class="card-title"><i class="fa-solid fa-share-nodes"></i>&emsp;@TotalInvited people</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info">
+            <div class="card-body">
+                <div class="card-text">You have earn</div>
+                <div class="card-title"><i class="fa-solid fa-star"></i>&emsp;@TotalPoints points</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-secondary">
+            <div class="card-body">
+                <div class="card-text">You have helped</div>
+                <div class="card-title"><i class="fa-solid fa-book"></i>&emsp;@TotalHelped grades</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<SurveyPrompt Title="How is Contextualize working for you?" />
+
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; }
+
+    private User User;
+    private int TotalTranslated = new Random().Next(100, 200);
+    private int TotalReviewed = new Random().Next(50, 99);
+    private int TotalContextualized = new Random().Next(20, 49);
+    private int TotalInvited = new Random().Next(1, 4);
+    private int TotalPoints = new Random().Next(50, 99);
+    private int TotalHelped = new Random().Next(5, 10);
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = await SessionStorage.GetItemAsync<User>("current-user");
+        if(User == null)
+        {
+            NavManager.NavigateTo("/login");
+        }
+        else {
+            if (User.IsNew)
+                {
+                    Modal.Show<NewUserPrompt>("System Message");
+                }
+        }
+        await base.OnInitializedAsync();
+    }
+}

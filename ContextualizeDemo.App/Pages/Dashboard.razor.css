@@ -1,0 +1,23 @@
+﻿.card-text {
+    border-bottom: solid;
+    border-width: .1rem;
+}
+
+.card-title {
+    font-weight: bold;
+    text-align: end;
+}
+
+.card:hover {
+    cursor: grab;
+}
+
+.card:hover .card-text {
+    border-width: 0;
+    font-weight: bold;
+}
+
+.card:hover .card-title {
+    font-weight: bold;
+    font-size: 1.05rem;
+}

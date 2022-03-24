@@ -1,0 +1,48 @@
+﻿@page "/assignments"
+@inject HttpClient Http
+
+<PageTitle>Assignments - @Constants.AppName</PageTitle>
+
+<h3>Assignments</h3>
+
+@if (AssignmentsList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped table-bordered table-responsive">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Grade</th>
+                <th>Role</th>
+                <th>Reviews</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in AssignmentsList)
+            {
+                <tr>
+                    <td>@assignment.Subject</td>
+                    <td>@assignment.Grade</td>
+                    <td>@assignment.Role</td>
+                    <td>@assignment.Reviews</td>
+                    <td>
+                        <a href="/review" class="btn btn-success">Review</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<Assignment> AssignmentsList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AssignmentsList = await Http.GetFromJsonAsync<Assignment[]>("sample-data/assignments.json");
+    }
+}

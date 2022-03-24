@@ -1,0 +1,40 @@
+﻿@inherits LayoutComponentBase
+
+@using Blazored.Toast.Configuration
+
+@inject IJSRuntime JSRuntime
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10"
+                IconType="IconType.FontAwesome"
+                ErrorIcon="cil-thumb-down"
+                InfoIcon="cil-info"
+                SuccessIcon="cil-thumb-up"
+                WarningIcon="cil-warning" />
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("Contextualize.prepareLayout");
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

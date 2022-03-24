@@ -1,0 +1,59 @@
+﻿@page "/overview"
+
+@layout EmptyLayout
+
+@inject NavigationManager NavManager
+
+<PageTitle>Overview - @Constants.AppName</PageTitle>
+
+<div class="bg-white bg-opacity-75 p-5 m-auto">        
+    <div class="text-center">
+        <img src="/media/logo-contextualize.png" />
+    </div>
+    <br />
+    <p>
+        Educational content needs to be in a language the students can understand to be useful.<br />
+        When it is fully in line with the cultural context of a student it works the best.
+    </p>
+    <p>
+        Contextualize is a platform taking the best educational content from around the world and bringing it into the language and context of students locally.
+    </p>
+    <p>
+        Contextualizing the content.
+    </p>
+    <p>
+        Across the world, we enlist staff, experts and volunteers to ensure high quality educational content is made accessible to students.
+    </p>
+    <p>
+        <strong>@TranslatedPages</strong> of <strong>@TotalTranslatedPages</strong> pages have been translated,<br />
+        <strong>@ContextualizedPages</strong> of <strong>@TotalContextualizedPages</strong> pages have been contextualized<br />
+        And <strong>@CompletedPages</strong> of <strong>@TotalCompletedPages</strong> reviews are complete* (note: every page is reviewed multiple times)
+    </p>
+    <p>
+        Our current grants cover Benin, Cameroon and the Democratic Republic of the Congo. If you have interest in support another regions, contact us at:
+    </p>
+    <div class="d-flex justify-content-around">
+        <button class="btn btn-secondary" @onclick="GoToLogin">Login</button>
+        <button class="btn btn-primary" @onclick="GoToRegister">Register</button>
+    </div>
+</div>
+
+@code {
+    private int TranslatedPages = new Random().Next(100, 200);
+    private int ContextualizedPages = new Random().Next(50, 99);
+    private int CompletedPages = new Random().Next(20, 49);
+
+    private int TotalTranslatedPages = new Random().Next(500, 700);
+    private int TotalContextualizedPages = new Random().Next(200, 499);
+    private int TotalCompletedPages = new Random().Next(100, 199);
+
+    private void GoToLogin()
+    {
+        NavManager.NavigateTo("/login");
+    }
+    
+    private void GoToRegister()
+    {
+        NavManager.NavigateTo("/register");
+    }
+}

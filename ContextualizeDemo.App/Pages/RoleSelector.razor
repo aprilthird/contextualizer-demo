@@ -1,0 +1,115 @@
+﻿@page "/role-selector"
+
+@layout EmptyLayout
+
+@inject NavigationManager NavManager
+@inject ISessionStorageService SessionStorage
+@inject RoleSelectorViewModel ViewModel
+
+<PageTitle>Select Role - @Constants.AppName</PageTitle>
+
+<div class="bg-white bg-opacity-75 p-5 m-auto">     
+    <div class="text-center mb-4">
+        <img src="/media/logo-contextualize.png" width="300"/>
+    </div>
+    <h3 class="text-uppercase">What role will you play?</h3>
+    <EditForm Model="ViewModel" OnValidSubmit="OnContinue" OnInvalidSubmit="ShowAlertAsync">
+        <FluentValidationValidator />
+        <div class="alert alert-danger alert-dismissible fade @AlertDisplayClass" role="alert" style="display:@AlertDisplayCss">
+            <h5 class="alert-heading">Error</h5>
+            <p>@ErrorMessage</p>
+            <ValidationSummary/>
+            @*<button class="close" type="button" data-dismiss="alert" aria-label="Close" @onclick="CloseAlertAsync"><span aria-hidden="true">&times;</span></button>*@
+        </div>
+        <InputNumber @bind-Value="ViewModel.Role" hidden required/>
+        <div class="card-selector @IsSelected(Constants.Role.TRANSLATOR)" @onclick="() => OnSelect(Constants.Role.TRANSLATOR)">
+            <h6 class="fw-bold">@Constants.Role.VALUES[Constants.Role.TRANSLATOR]</h6>
+            <p>
+                We will provide computer translations of educational materials, and we need you to review them and fix them.<br />
+                [<strong>@NeedsTranslation</strong> items needs translation]
+            </p>
+        </div>
+        <div class="card-selector @IsSelected(Constants.Role.REVIEWER)" @onclick="() => OnSelect(Constants.Role.REVIEWER)">
+            <h6 class="fw-bold">@Constants.Role.VALUES[Constants.Role.REVIEWER]</h6>
+            <p>
+                Original translations have been done, and we need you to review and confirm they are correct, making corrections as necessary<br />
+                [<strong>@NeedsReviewing</strong> items needs translation]
+            </p>
+        </div>
+        <div class="card-selector @IsSelected(Constants.Role.CONTEXTUALIZER)" @onclick="() => OnSelect(Constants.Role.CONTEXTUALIZER)">
+            <h6 class="fw-bold">@Constants.Role.VALUES[Constants.Role.CONTEXTUALIZER]</h6>
+            <p>
+                The translations may not be appropriate in context. They may refer to culturally relative items, like historical events or products from another country. We need you to pick items that fit with your cultural context. For example, rather than “Taxi driver” it may be “Lorry Driver” in your country.<br />
+                [<strong>@NeedsContextualization</strong> items needs translation]
+            </p>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="/register" class="small">Back</a>
+            <button class="btn btn-primary" type="submit">Continue</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private int NeedsTranslation = new Random().Next(100, 200);
+    private int NeedsReviewing = new Random().Next(50, 99);
+    private int NeedsContextualization = new Random().Next(20, 49);
+
+    private string? ErrorMessage;
+    private string AlertDisplayClass = "hide";
+    private string AlertDisplayCss = "none;";
+
+    private async Task OnContinue()
+    {
+        var user = await SessionStorage.GetItemAsync<User>("current-register");
+        if(user == null)
+            NavManager.NavigateTo("/register");
+        else {
+            user.Role = ViewModel.Role;
+            await SessionStorage.SetItemAsync<User>("current-register", user);
+            NavManager.NavigateTo("/scenario-selector");             
+        }
+    }
+
+    private void OnSelect(int roleId)
+    {
+        ViewModel.Role = roleId;
+    }
+
+    private string IsSelected(int roleId)
+    {
+        if (ViewModel.Role == roleId)
+            return "selected";
+        else
+            return string.Empty;
+    }
+
+    public async Task ShowAlertAsync()
+    {
+        AlertDisplayCss = "block;";
+        await Task.Delay(500);
+        AlertDisplayClass = "show";
+    }
+
+    public async Task CloseAlertAsync()
+    {
+        ErrorMessage = null;
+        AlertDisplayClass = "hide";
+        await Task.Delay(1000);
+        AlertDisplayCss = "none;";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await SessionStorage.GetItemAsync<User>("current-register");
+        if (user != null)
+        {
+            ViewModel.Role = user.Role;
+        }
+        else
+        {
+            NavManager.NavigateTo("/register");
+        }
+        await base.OnInitializedAsync();
+    }
+}

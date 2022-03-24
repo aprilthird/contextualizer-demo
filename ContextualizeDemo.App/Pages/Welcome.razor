@@ -1,0 +1,28 @@
+﻿@page "/"
+@page "/welcome"
+
+@layout EmptyLayout
+
+@inject NavigationManager NavManager
+
+<PageTitle>Welcome - @Constants.AppName</PageTitle>
+
+<div class="bg-white bg-opacity-75 p-5 m-auto">        
+    <div class="text-center">
+        <img src="/media/logo-contextualize.png" />
+        <p class="h3">
+            Welcome to <strong>@Constants.AppName</strong>.
+        </p>
+        <p class="h5">
+            Education in context&trade;
+        </p>
+        <button class="btn btn-primary text-uppercase" @onclick="GoToOverview">Start</button>
+    </div>
+</div>
+
+@code {
+    private void GoToOverview()
+    {
+        NavManager.NavigateTo("/overview");
+    }
+}

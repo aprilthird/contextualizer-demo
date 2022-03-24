@@ -1,0 +1,98 @@
+﻿@page "/scenario-selector"
+
+@layout EmptyLayout
+
+@inject NavigationManager NavManager
+@inject IJSRuntime JSRuntime
+@inject ISessionStorageService SessionStorage
+@inject ILocalStorageService LocalStorage
+@inject IToastService ToastService
+@inject ScenarioSelectorViewModel ViewModel
+
+<PageTitle>Select Location - @Constants.AppName</PageTitle>
+
+<div class="bg-white bg-opacity-75 p-5 m-auto">     
+    <div class="text-center mb-4">
+        <img src="/media/logo-contextualize.png" width="300"/>
+    </div>
+    <h3 class="text-uppercase">Pick your Location</h3>
+    <EditForm Model="ViewModel" OnValidSubmit="OnComplete" OnInvalidSubmit="ShowAlertAsync">
+        <FluentValidationValidator />
+        <div class="alert alert-danger alert-dismissible fade @AlertDisplayClass" role="alert" style="display:@AlertDisplayCss">
+            <h5 class="alert-heading">Error</h5>
+            <p>@ErrorMessage</p>
+            <ValidationSummary/>
+            @*<button class="close" type="button" data-dismiss="alert" aria-label="Close" @onclick="CloseAlertAsync"><span aria-hidden="true">&times;</span></button>*@
+        </div>
+
+        <div id="map" style="height:300px;width:100%;"></div>
+        <br />
+        <InputTextArea @ref="InputTextArea" @bind-Value="ViewModel.Location" id="location_ref" rows="4" class="form-control" Placeholder="Location" disabled required/>
+        <br />
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="/role-selector" class="small">Back</a>
+            <button class="btn btn-primary" type="submit">Complete</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private string? ErrorMessage;
+    private string AlertDisplayClass = "hide";
+    private string AlertDisplayCss = "none;";
+    private InputTextArea InputTextArea { get; set; }
+
+    private async Task OnComplete()
+    {
+        var user = await SessionStorage.GetItemAsync<User>("current-register");
+        if(user == null)
+            NavManager.NavigateTo("/register");
+        else
+        {
+            user.Location = ViewModel.Location;
+            user.IsNew = true;
+            await SessionStorage.SetItemAsync<User>("current-register", user);
+            await LocalStorage.SetItemAsync<User>(user.Email, user);
+            ToastService.ShowSuccess("Success", "Registration Completed!");
+            NavManager.NavigateTo("/login");
+        }
+    }
+
+    public async Task ShowAlertAsync()
+    {
+        AlertDisplayCss = "block;";
+        await Task.Delay(500);
+        AlertDisplayClass = "show";
+    }
+
+    public async Task CloseAlertAsync()
+    {
+        ErrorMessage = null;
+        AlertDisplayClass = "hide";
+        await Task.Delay(1000);
+        AlertDisplayCss = "none;";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await SessionStorage.GetItemAsync<User>("current-register");
+        if (user != null)
+        {
+            ViewModel.Location = user.Location;
+        }
+        else
+        {
+            NavManager.NavigateTo("/register");
+        }
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("Contextualize.initGoogleMaps", "location_ref");
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

@@ -1,0 +1,41 @@
+﻿@inherits LayoutComponentBase
+
+@using Blazored.Toast.Configuration
+
+@inject IJSRuntime JSRuntime
+
+<div class="page">
+    <main>
+        <div id="particles-js" class="particles-background"></div>
+
+        <div class="background-image">
+            <img src="/media/context-background.jpg" />
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center vh-100">
+            <div style="z-index: 10;">
+                @Body
+            </div>
+        </div>
+    </main>
+</div>
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10"
+                IconType="IconType.FontAwesome"
+                ErrorIcon="cil-thumb-down"
+                InfoIcon="cil-info"
+                SuccessIcon="cil-thumb-up"
+                WarningIcon="cil-warning" />
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("Contextualize.prepareLayout");
+            await JSRuntime.InvokeVoidAsync("Contextualize.initParticles", "particles-js");
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

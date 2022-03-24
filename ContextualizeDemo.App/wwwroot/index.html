@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Contextualize</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet" />
+    <link href="_content/Blazored.Modal/blazored-modal.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="ContextualizeDemo.App.styles.css" rel="stylesheet" />
+    <link href="manifest.json" rel="manifest" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+</head>
+
+<body>
+    <div id="app" class="vh-100 vw-100 d-flex justify-content-center align-items-center bg-black">
+        <img src="media/loader.gif" alt="Loading..." width="200" />
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_content/Blazored.Modal/blazored.modal.js"></script>
+    <script src="/lib/ladda/js/spin.min.js"></script>
+    <script src="/lib/ladda/js/ladda.min.js"></script>
+    <script src="/lib/particles.js/particles.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkxfdJoeeUW_t1Z8i7FFLxwDVDHNT8eyU&callback=initMap"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="js/external-site.js"></script>
+    <script src="js/interop.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+
+</html>

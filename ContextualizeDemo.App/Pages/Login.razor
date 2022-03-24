@@ -1,0 +1,91 @@
+﻿@page "/login"
+
+@layout EmptyLayout
+
+@inject NavigationManager NavManager
+@inject ILocalStorageService LocalStorage
+@inject ISessionStorageService SessionStorage
+@inject LoginViewModel ViewModel
+
+<PageTitle>Login - @Constants.AppName</PageTitle>
+
+<div class="bg-white bg-opacity-75 p-5 m-auto">
+    <div class="text-center mb-4">
+        <img src="/media/logo-contextualize.png" width="300"/>
+    </div>
+    <h3 class="text-uppercase">Login</h3>
+    <EditForm Model="ViewModel" OnValidSubmit="OnLogin" OnInvalidSubmit="ShowAlertAsync">
+        <FluentValidationValidator />
+        <div class="alert alert-danger alert-dismissible fade @AlertDisplayClass" role="alert" style="display:@AlertDisplayCss">
+            <h5 class="alert-heading">Error</h5>
+            <p>@ErrorMessage</p>
+            <ValidationSummary />
+            @*<button class="close" type="button" data-dismiss="alert" aria-label="Close" @onclick="CloseAlertAsync"><span aria-hidden="true">&times;</span></button>*@
+        </div>
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span><i class="fa-solid fa-at"></i></span>
+                </span>
+              </div>        
+              <InputText @bind-Value="ViewModel.Email" id="email" class="form-control" placeholder="Email" type="email" required />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span><i class="fa-solid fa-key"></i></span>
+                </span>
+              </div>        
+            <InputText @bind-Value="ViewModel.Password" id="password" class="form-control" placeholder="Password" type="password" required />
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="/register" class="small">¿Don't you have an account?</a>
+            <button class="btn btn-primary" type="submit">Login</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private string? ErrorMessage;
+    private string AlertDisplayClass = "hide";
+    private string AlertDisplayCss = "none;";
+
+    private async Task OnLogin()
+    {
+        var user = await LocalStorage.GetItemAsync<User>(ViewModel.Email);
+
+        if(user != null)
+        {
+            if (user.Password.Equals(ViewModel.Password))
+            {
+                await SessionStorage.SetItemAsync<User>("current-user", user);
+                NavManager.NavigateTo("/dashboard");       
+            }
+        }
+        else {
+            ErrorMessage = "Incorrect Email or Password";
+            await ShowAlertAsync();
+        }
+    }
+
+    public async Task ShowAlertAsync()
+    {
+        AlertDisplayCss = "block;";
+        await Task.Delay(500);
+        AlertDisplayClass = "show";
+    }
+
+    public async Task CloseAlertAsync()
+    {
+        ErrorMessage = null;
+        AlertDisplayClass = "hide";
+        await Task.Delay(1000);
+        AlertDisplayCss = "none;";
+    }
+}
